@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -23,154 +23,121 @@
         background-color to all even (or odd) table rows:
       </p>
 
-      <table>
+      <table id="tabelaDados">
         <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Points</th>
-        </tr>
-        <tr>
-          <td>Jill</td>
-          <td>Smith</td>
-          <td>50</td>
-        </tr>
-        <tr>
-          <td>Eve</td>
-          <td>Jackson</td>
-          <td>94</td>
-        </tr>
-        <tr>
-          <td>Adam</td>
-          <td>Johnson</td>
-          <td>67</td>
+          <th>Livro</th>
+          <th>Autor</th>
+          <th>Preço</th>
+          <th>Loja</th>
         </tr>
       </table>
+      <tbody></tbody>
     </div>
-  </body>
 
-  <script>
-    //Cria a tabela
-    function novaLinha(tbody, array_valores) {
-      let novaLinha = tbody.insertRow();
+    <script type="text/javascript">
+      //Cria a tabela
+      function novaLinha(tbody, array_valores) {
+        let novaLinha = tbody.insertRow();
 
-      array_valores.forEach(function (v, i) {
-        let novaCelula = novaLinha.insertCell(i);
+        array_valores.forEach(function (v, i) {
+          let novaCelula = novaLinha.insertCell(i);
 
-        let novoTexto = document.createTextNode(v);
-        if (typeof v == "object") {
-          novoTexto = v;
-        }
-
-        novaCelula.appendChild(novoTexto);
-      });
-    }
-
-    function getDados() {
-      if (localStorage.getItem("dados") == null) {
-        localStorage.setItem(
-          "dados",
-          JSON.stringify([
-            {
-              cor: "vermelho",
-              velocidade: 30,
-              marca: "Board",
-              estacao: {
-                cidade: "rio de janeiro",
-                bairro: "centro",
-                pais: "brasil",
-              },
-            },
-            {
-              cor: "preto",
-              velocidade: 20,
-              marca: "Patinet",
-              estacao: { cidade: "niteroi", bairro: "icarai", pais: "brasil" },
-            },
-            {
-              cor: "verde",
-              velocidade: 25,
-              marca: "BMW",
-              estacao: {
-                cidade: "sao paulo",
-                bairro: "centro",
-                pais: "brasil",
-              },
-            },
-            {
-              cor: "vermelho",
-              velocidade: 25,
-              marca: "Board",
-              estacao: { cidade: "recife", bairro: "centro", pais: "brasil" },
-            },
-          ])
-        );
-      }
-
-      return JSON.parse(localStorage.getItem("dados"));
-    }
-
-    //Insere os dados na tabela / traduz
-    function setDados(x) {
-      localStorage.setItem("dados", JSON.stringify(x));
-    }
-
-    //Atuliza a tabela
-    function atualizaTabela() {
-      let tbody = document
-        .getElementById("tabelaPatinete")
-        .getElementsByTagName("tbody")[0];
-
-      tbody.innerHTML = "";
-
-      getDados().forEach(function (patinete, i) {
-        let linkRemover = document.createElement("span");
-        linkRemover.innerHTML = "remover";
-        linkRemover.addEventListener("click", function (e) {
-          if (confirm(`Deseja remover ${patinete.cor} ?`)) {
-            let dadosModificados = getDados();
-            dadosModificados.splice(i, 1);
-            setDados(dadosModificados);
+          let novoTexto = document.createTextNode(v);
+          if (typeof v == "object") {
+            novoTexto = v;
           }
 
-          atualizaTabela();
+          novaCelula.appendChild(novoTexto);
         });
+      }
 
-        let estacao = "";
-
-        if (patinete.estacao != undefined) {
-          estacao = patinete.estacao.cidade;
+      function getDados() {
+        if (localStorage.getItem("dados") == null) {
+          localStorage.setItem(
+            "dados",
+            JSON.stringify([
+              {
+                nomeLivro: "Livro 1",
+                autor: "Lucas Samel",
+                preco: 100,
+                loja: "Amazon",
+              },
+              {
+                nomeLivro: "Livro 2",
+                autor: "João Silva",
+                preco: 80,
+                loja: "Saraiva",
+              }
+            ])
+          );
         }
 
-        novaLinha(tbody, [
-          patinete.cidade,
-          patinete.velocidade,
-          patinete.marca,
-          estacao,
-          linkRemover,
-        ]);
+        return JSON.parse(localStorage.getItem("dados"));
+      }
+
+      //Insere os dados na tabela / traduz
+      function setDados(x) {
+        localStorage.setItem("dados", JSON.stringify(x));
+      }
+
+      //Atuliza a tabela
+      function atualizaTabela() {
+        let tbody = document
+          .getElementById("tabelaDados")
+          .getElementsByTagName("tbody")[0];
+
+        tbody.innerHTML = "";
+
+        getDados().forEach(function (livro, i) {
+          let linkRemover = document.createElement("span");
+          linkRemover.innerHTML = "remover";
+          linkRemover.addEventListener("click", function (e) {
+            if (confirm(`Deseja remover ${livro.nomeLivro} ?`)) {
+              let dadosModificados = getDados();
+              dadosModificados.splice(i, 1);
+              setDados(dadosModificados);
+            }
+
+            atualizaTabela();
+          });
+
+          let estacao = "";
+
+          if (patinete.estacao != undefined) {
+            estacao = patinete.estacao.cidade;
+          }
+
+          novaLinha(tbody, [
+            patinete.cidade,
+            patinete.velocidade,
+            patinete.marca,
+            estacao,
+            linkRemover,
+          ]);
+        });
+      }
+
+      //Cadastra nova informacao na tabela
+      document
+        .getElementById("buttonCadastrar")
+        .addEventListener("click", function () {
+          let formulario = document.getElementById("meuForm");
+
+          let dadosForm = new FormData(formulario);
+
+          let novoDado = Object.fromEntries(dadosForm);
+
+          let dados = getDados();
+
+          dados.push(novoDado);
+
+          setDados(dados);
+        });
+
+      //Escuta os eventos
+      document.addEventListener("DOMContentLoaded", function (event) {
+        atualizaTabela();
       });
-    }
-
-    //Cadastra nova informacao na tabela
-    document
-      .getElementById("buttonCadastrar")
-      .addEventListener("click", function () {
-        let formulario = document.getElementById("meuForm");
-
-        let dadosForm = new FormData(formulario);
-
-        let novoDado = Object.fromEntries(dadosForm);
-
-        let dados = getDados();
-
-        dados.push(novoDado);
-
-        setDados(dados);
-      });
-
-    //Escuta os eventos
-    document.addEventListener("DOMContentLoaded", function (event) {
-      atualizaTabela();
-    });
-  </script>
+    </script>
+  </body>
 </html>
