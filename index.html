@@ -16,26 +16,58 @@
       </div>
     </header>
 
+    <form id="meuForm">
+      <label>Titulo</label>
+      <input
+        type="text"
+        id="titulo"
+        name="titulo"
+        placeholder="Titulo do livro"
+      />
+
+      <label>Autor</label>
+      <input type="text" id="autor" name="autor" placeholder="Nome do autor" />
+
+      <label>Valor</label>
+      <br />
+      <input
+        type="number"
+        id="valor"
+        name="valor"
+        placeholder="Valor do livro"
+      />
+      <br />
+
+      <label>Loja</label>
+      <select id="loja" name="loja">
+        <option value="Amazon">Amazon</option>
+        <option value="Saraiva">Saraiva</option>
+        <option value="Livraria Cultura">Livraria Cultura</option>
+      </select>
+
+      <input type="submit" id="buttonCadastrar" value="Cadastrar" />
+    </form>
+
     <div>
-      <h2>Zebra Striped Table</h2>
-      <p>
-        For zebra-striped tables, use the nth-child() selector and add a
-        background-color to all even (or odd) table rows:
-      </p>
+      <h2>Tabela</h2>
 
       <table id="tabelaDados">
-        <tr>
-          <th>Livro</th>
-          <th>Autor</th>
-          <th>Preço</th>
-          <th>Loja</th>
-        </tr>
+        <thead>
+          <tr>
+            <th>Livro</th>
+            <th>Autor</th>
+            <th>Preço</th>
+            <th>Loja</th>
+            <th>Situação</th>
+            <th>Função</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
       </table>
-      <tbody></tbody>
     </div>
 
     <script type="text/javascript">
-      //Cria a tabela
+      //Cria a tabela no HTML
       function novaLinha(tbody, array_valores) {
         let novaLinha = tbody.insertRow();
 
@@ -51,23 +83,26 @@
         });
       }
 
+      //Inicia a tabela no localStorage
       function getDados() {
         if (localStorage.getItem("dados") == null) {
           localStorage.setItem(
             "dados",
             JSON.stringify([
               {
-                nomeLivro: "Livro 1",
+                titulo: "Livro 1",
                 autor: "Lucas Samel",
-                preco: 100,
+                valor: 100,
                 loja: "Amazon",
+                promocao: "Preço acima da média",
               },
               {
-                nomeLivro: "Livro 2",
+                titulo: "Livro 2",
                 autor: "João Silva",
-                preco: 80,
+                valor: 80,
                 loja: "Saraiva",
-              }
+                promocao: "Preço acima da média",
+              },
             ])
           );
         }
@@ -90,9 +125,9 @@
 
         getDados().forEach(function (livro, i) {
           let linkRemover = document.createElement("span");
-          linkRemover.innerHTML = "remover";
+          linkRemover.innerHTML = "APAGAR";
           linkRemover.addEventListener("click", function (e) {
-            if (confirm(`Deseja remover ${livro.nomeLivro} ?`)) {
+            if (confirm(`Deseja remover ${livro.titulo} ?`)) {
               let dadosModificados = getDados();
               dadosModificados.splice(i, 1);
               setDados(dadosModificados);
@@ -101,17 +136,16 @@
             atualizaTabela();
           });
 
-          let estacao = "";
+          let promocao = livro.valor < 50 ? "Promoção" : "Valor acima da média"
 
-          if (patinete.estacao != undefined) {
-            estacao = patinete.estacao.cidade;
-          }
+        
 
           novaLinha(tbody, [
-            patinete.cidade,
-            patinete.velocidade,
-            patinete.marca,
-            estacao,
+            livro.titulo,
+            livro.autor,
+            livro.valor,
+            livro.loja,
+            promocao,
             linkRemover,
           ]);
         });
@@ -126,6 +160,12 @@
           let dadosForm = new FormData(formulario);
 
           let novoDado = Object.fromEntries(dadosForm);
+
+          // if (novoDado.valor < 50 ? "Promoção" : "Valor acima da média") {
+          //   promocao = livro.promocao;
+          // }
+
+          // Object.assign(novoDado, {promocao: promocao});
 
           let dados = getDados();
 

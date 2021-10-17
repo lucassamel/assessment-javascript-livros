@@ -18,7 +18,7 @@
     </header>
 
     <div class="container">
-      <form id="formLivros">
+      <form id="meuForm">
         <label>Titulo</label>
         <input
           type="text"
@@ -52,13 +52,13 @@
           <option value="Livraria Cultura">Livraria Cultura</option>
         </select>
 
-        <input type="submit" id="cadastro" value="Cadastrar" />
+        <input type="submit" id="buttonCadastrar" value="Cadastrar" />
       </form>
 
       <div>
         <h2>Livros Cadastrados</h2>
 
-        <table id="tabela">
+        <table id="tabelaDados">
           <tr>
             <th>Livro</th>
             <th>Autor</th>
@@ -70,6 +70,68 @@
         </table>
       </div>
     </div>
+
+    <script>
+
+      //Cadastra nova informacao na tabela
+      document
+        .getElementById("buttonCadastrar")
+        .addEventListener("click", function () {
+          let formulario = document.getElementById("meuForm");
+
+          let dadosForm = new FormData(formulario);
+
+          let novoDado = Object.fromEntries(dadosForm);
+
+          let dados = getDados();
+
+          dados.push(novoDado);
+
+          setDados(dados);
+        });
+
+        //Atuliza a tabela
+      function atualizaTabela() {
+        let tbody = document
+          .getElementById("tabelaDados")
+          .getElementsByTagName("tbody")[0];
+
+        tbody.innerHTML = "";
+
+        getDados().forEach(function (livro, i) {
+          let linkRemover = document.createElement("span");
+          linkRemover.innerHTML = "remover";
+          linkRemover.addEventListener("click", function (e) {
+            if (confirm(`Deseja remover ${livro.nomeLivro} ?`)) {
+              let dadosModificados = getDados();
+              dadosModificados.splice(i, 1);
+              setDados(dadosModificados);
+            }
+
+            atualizaTabela();
+          });
+
+          let estacao = "";
+
+          if (patinete.estacao != undefined) {
+            estacao = patinete.estacao.cidade;
+          }
+
+          novaLinha(tbody, [
+            patinete.cidade,
+            patinete.velocidade,
+            patinete.marca,
+            estacao,
+            linkRemover,
+          ]);
+        });
+      }
+
+        //Escuta os eventos
+      document.addEventListener("DOMContentLoaded", function (event) {
+        atualizaTabela();
+      });
+    </script>
     
   </body>
 </html>
