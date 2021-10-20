@@ -11,8 +11,6 @@
     <header>
       <div class="topnav">
         <a class="active" href="index.html">Home</a>
-        <a href="lojas.html">Lojas</a>
-        <a href="livros.html">Livros</a>
       </div>
     </header>
 
@@ -23,10 +21,17 @@
         id="titulo"
         name="titulo"
         placeholder="Titulo do livro"
+        required
       />
 
       <label>Autor</label>
-      <input type="text" id="autor" name="autor" placeholder="Nome do autor" />
+      <input
+        type="text"
+        id="autor"
+        name="autor"
+        placeholder="Nome do autor"
+        required
+      />
 
       <label>Valor</label>
       <br />
@@ -35,7 +40,9 @@
         id="valor"
         name="valor"
         placeholder="Valor do livro"
+        required
       />
+      <br />
       <br />
 
       <label>Loja</label>
@@ -46,6 +53,12 @@
       </select>
 
       <input type="submit" id="buttonCadastrar" value="Cadastrar" />
+      <input
+        type="submit"
+        id="atualizar"
+        value="Atualizar"
+        style="display: none"
+      />
     </form>
 
     <div>
@@ -59,6 +72,7 @@
             <th>Preço</th>
             <th>Loja</th>
             <th>Situação</th>
+            <th>Função</th>
             <th>Função</th>
           </tr>
         </thead>
@@ -94,14 +108,12 @@
                 autor: "Lucas Samel",
                 valor: 100,
                 loja: "Amazon",
-                promocao: "Preço acima da média",
               },
               {
                 titulo: "Livro 2",
                 autor: "João Silva",
                 valor: 80,
                 loja: "Saraiva",
-                promocao: "Preço acima da média",
               },
             ])
           );
@@ -136,9 +148,43 @@
             atualizaTabela();
           });
 
-          let promocao = livro.valor < 50 ? "Promoção" : "Valor acima da média"
+          let linkEditar = document.createElement("span");
+          linkEditar.innerHTML = "EDITAR";
+          linkEditar.addEventListener("click", function (e) {
+            document.getElementById("titulo").value = livro.titulo;
+            document.getElementById("autor").value = livro.autor;
+            document.getElementById("valor").value = livro.valor;
+            document.getElementById("loja").value = livro.loja;
 
-        
+            document.getElementById("buttonCadastrar").style.display = "none"; //hide.
+            document.getElementById("atualizar").style.display = "block"; //show.
+
+            document
+              .getElementById("atualizar")
+              .addEventListener("click", function (e) {
+                let formulario = document.getElementById("meuForm");
+
+                let dadosForm = new FormData(formulario);
+
+                let novoDado = Object.fromEntries(dadosForm);
+
+                console.log(novoDado);
+
+                let dadosModificados = getDados();
+                dadosModificados.splice(i, 1, novoDado);
+                setDados(dadosModificados);
+
+                setDados(dadosModificados);
+
+                document.getElementById("buttonCadastrar").style.display =
+                  "block"; //hide.
+                document.getElementById("atualizar").style.display = "none"; //show.
+              });
+
+            atualizaTabela();
+          });
+
+          let promocao = livro.valor < 50 ? "Promoção" : "Valor acima da média";
 
           novaLinha(tbody, [
             livro.titulo,
@@ -147,9 +193,31 @@
             livro.loja,
             promocao,
             linkRemover,
+            linkEditar,
           ]);
         });
       }
+
+      document
+        .getElementById("atualizar")
+        .addEventListener("click", function (e) {
+          let formulario = document.getElementById("meuForm");
+
+          let dadosForm = new FormData(formulario);
+
+          let novoDado = Object.fromEntries(dadosForm);
+
+          console.log(novoDado);
+
+          let dadosModificados = getDados();
+          dadosModificados.splice(i, 1, novoDado);
+          setDados(dadosModificados);
+
+          setDados(dadosModificados);
+
+          document.getElementById("buttonCadastrar").style.display = "block"; //hide.
+          document.getElementById("atualizar").style.display = "none"; //show.
+        });
 
       //Cadastra nova informacao na tabela
       document
@@ -160,12 +228,6 @@
           let dadosForm = new FormData(formulario);
 
           let novoDado = Object.fromEntries(dadosForm);
-
-          // if (novoDado.valor < 50 ? "Promoção" : "Valor acima da média") {
-          //   promocao = livro.promocao;
-          // }
-
-          // Object.assign(novoDado, {promocao: promocao});
 
           let dados = getDados();
 
